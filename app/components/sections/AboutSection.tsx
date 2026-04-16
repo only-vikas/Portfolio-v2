@@ -1,78 +1,204 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { TrendingUp, Globe, Brain, BookOpen, Trophy, Crown, Fingerprint } from "lucide-react";
-import ScrollTriggerWrapper from "../animations/ScrollTriggerWrapper";
+import React, { useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { BIO } from "@/lib/data";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-const INTERESTS = [
-  { name: "Stocks & Markets", icon: <TrendingUp size={24} /> },
-  { name: "Geopolitics", icon: <Globe size={24} /> },
-  { name: "Psychology & Human Behavior", icon: <Brain size={24} /> },
-  { name: "Books & Deep Reads", icon: <BookOpen size={24} /> },
-  { name: "Cricket", icon: <Trophy size={24} /> }, // Placeholder for cricket
-  { name: "Chess", icon: <Crown size={24} /> },   // Crown for chess king
+gsap.registerPlugin(ScrollTrigger);
+
+// Word-by-word reveal animation
+function RevealText({ text, className }: { text: string; className?: string }) {
+  const words = text.split(" ");
+  return (
+    <span className={className}>
+      {words.map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden mr-[0.25em]">
+          <motion.span
+            className="inline-block"
+            initial={{ y: "110%", opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{
+              duration: 0.7,
+              delay: i * 0.04,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          >
+            {word}
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
+const SKILLS_LIST = [
+  "React", "Next.js", "Three.js", "TypeScript", "Node.js",
+  "GSAP", "Framer Motion", "Go", "Python", "AI/ML",
+  "PostgreSQL", "MongoDB", "WebGL", "Figma", "Tailwind CSS",
 ];
 
 export default function AboutSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const themeRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+
+  const y = useSpring(useTransform(scrollYProgress, [0, 1], [60, -60]), {
+    stiffness: 80, damping: 20,
+  });
+
+  // Theme switch trigger positioned at END of this section
+  useEffect(() => {
+    if (!themeRef.current) return;
+
+    const trigger = ScrollTrigger.create({
+      trigger: themeRef.current,
+      start: "top center",
+      onEnter: () => {
+        document.documentElement.classList.add("light");
+        // Lens flare burst on light switch
+        const flash = document.createElement("div");
+        flash.style.cssText = `
+          position:fixed; inset:0; z-index:9999; pointer-events:none;
+          background:radial-gradient(circle at center, rgba(255,255,255,0.6) 0%, transparent 70%);
+          animation: flashBurst 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
+        `;
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 1300);
+      },
+      onLeaveBack: () => {
+        document.documentElement.classList.remove("light");
+      },
+    });
+
+    return () => trigger.kill();
+  }, []);
+
   return (
-    <section id="about" className="w-full max-w-7xl px-8 lg:px-24 py-32 flex flex-col gap-16 relative z-10 border-t border-foreground/5 mt-16">
-      
-      {/* About Introduction */}
-      <ScrollTriggerWrapper animationParams={{ opacity: 0, y: 50, duration: 1 }}>
-        <div className="flex items-center gap-4">
-          <Fingerprint className="text-brand" size={40} />
-          <h3 className="text-5xl font-bold tracking-tight">The Digital Universe</h3>
-        </div>
-      </ScrollTriggerWrapper>
+    <section
+      ref={sectionRef}
+      id="about"
+      className="relative w-full overflow-hidden"
+    >
+      {/* ── DARK ABOUT SECTION ── */}
+      <div className="relative w-full py-32 bg-[#0a0a0a]">
+        {/* Background glows */}
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none -translate-x-1/2 -translate-y-1/4" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px] pointer-events-none translate-x-1/3 translate-y-1/4" />
 
-      <div className="flex flex-col gap-6 max-w-4xl">
-        <ScrollTriggerWrapper animationParams={{ opacity: 0, x: -50, duration: 1 }}>
-          <p className="text-xl lg:text-2xl text-foreground/80 leading-relaxed font-light">
-            I am {BIO.name}, a {BIO.role} who builds cinematic, high-performance web experiences. 
-            Merging deep technical expertise with a keen eye for aesthetics to push the boundaries of digital interfaces.
-          </p>
-        </ScrollTriggerWrapper>
-        <ScrollTriggerWrapper animationParams={{ opacity: 0, x: -50, duration: 1, delay: 0.2 }}>
-          <p className="text-lg text-foreground/60 leading-relaxed">
-            When I&apos;m not architecting complex systems or animating pixels, I am exploring the fundamental patterns that shape our world—from global markets to human behavior.
-          </p>
-        </ScrollTriggerWrapper>
-      </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-8 lg:px-24">
+          
+          {/* Section label */}
+          <motion.p
+            className="text-xs font-bold tracking-[0.4em] text-white/30 uppercase mb-6"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            Who I am
+          </motion.p>
 
-      {/* Beyond the Code Section */}
-      <div id="beyond" className="flex flex-col gap-10 mt-12 pt-12 border-t border-foreground/5">
-        <ScrollTriggerWrapper animationParams={{ opacity: 0, y: 30, duration: 0.8 }}>
-          <div className="flex flex-col gap-2">
-            <h3 className="text-4xl font-bold tracking-tight">Beyond the Code</h3>
-            <p className="text-foreground/50 text-lg">What fuels my universe outside the terminal</p>
-          </div>
-        </ScrollTriggerWrapper>
-        
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-          {INTERESTS.map((interest, idx) => (
-            <ScrollTriggerWrapper 
-              key={interest.name} 
-              animationParams={{ opacity: 0, scale: 0.9, duration: 0.6, delay: (idx % 3) * 0.15 }}
-            >
-              <motion.div 
-                whileHover="hover"
-                className="group flex flex-col items-center justify-center gap-4 p-8 rounded-3xl bg-accent/30 border border-foreground/10 hover:border-brand/40 hover:bg-accent/60 text-foreground shadow-sm transition-colors cursor-default h-full text-center"
+          {/* Giant heading */}
+          <h2 className="text-6xl lg:text-[7rem] font-black tracking-tighter leading-none text-white uppercase mb-12">
+            <RevealText text="ABOUT ME" />
+          </h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            {/* Left: Bio copy */}
+            <div className="flex flex-col gap-8">
+              <motion.p
+                className="text-xl lg:text-2xl text-white/70 leading-relaxed font-light"
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.9, delay: 0.2 }}
               >
-                <motion.div 
-                  variants={{ hover: { scale: 1.2, rotate: 5, color: "var(--brand)" } }}
-                  className="text-foreground/60 transition-colors duration-300 p-4 bg-background rounded-full border border-foreground/5"
-                >
-                  {interest.icon}
-                </motion.div>
-                <span className="font-semibold tracking-wide text-lg">{interest.name}</span>
+                I am <span className="text-white font-semibold">{BIO.name}</span>, a{" "}
+                <span className="text-blue-400 font-semibold">{BIO.role}</span> who builds
+                cinematic, high-performance web experiences.
+              </motion.p>
+
+              <motion.p
+                className="text-lg text-white/50 leading-relaxed"
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.9, delay: 0.35 }}
+              >
+                I merge deep technical expertise with a keen eye for aesthetics to push the
+                boundaries of digital interfaces. When not architecting complex systems or
+                animating pixels, I explore fundamental patterns that shape our world — from
+                global markets to human behavior.
+              </motion.p>
+
+              {/* Skills pill cloud */}
+              <motion.div
+                className="flex flex-wrap gap-3 pt-4"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              >
+                {SKILLS_LIST.map((skill, i) => (
+                  <motion.span
+                    key={skill}
+                    className="px-4 py-2 rounded-full text-sm font-semibold border border-white/10 bg-white/5 text-white/70"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + i * 0.04, duration: 0.4 }}
+                    whileHover={{
+                      scale: 1.1,
+                      borderColor: "rgba(59,130,246,0.5)",
+                      backgroundColor: "rgba(59,130,246,0.1)",
+                      color: "#93c5fd",
+                    }}
+                  >
+                    {skill}
+                  </motion.span>
+                ))}
               </motion.div>
-            </ScrollTriggerWrapper>
-          ))}
+            </div>
+
+            {/* Right: Animated stat blocks */}
+            <div className="flex flex-col gap-6">
+              {[
+                { value: "3+", label: "Years of Experience", color: "#3b82f6" },
+                { value: "7+", label: "Projects Shipped", color: "#8b5cf6" },
+                { value: "100K+", label: "Lines of Code", color: "#ec4899" },
+                { value: "∞", label: "Curiosity", color: "#f59e0b" },
+              ].map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  className="flex items-center gap-6 p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm"
+                  initial={{ opacity: 0, x: 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15, duration: 0.7 }}
+                  whileHover={{ x: 8, borderColor: stat.color + "40" }}
+                >
+                  <span
+                    className="text-5xl font-black leading-none"
+                    style={{ color: stat.color }}
+                  >
+                    {stat.value}
+                  </span>
+                  <span className="text-white/60 font-medium text-lg">{stat.label}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
-      
+
+      {/* ── THEME TRANSITION TRIGGER POINT ── */}
+      <div ref={themeRef} className="h-1 w-full" aria-hidden />
     </section>
   );
 }
