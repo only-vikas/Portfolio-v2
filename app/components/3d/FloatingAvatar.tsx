@@ -34,14 +34,15 @@ function Avatar({ mouse, activeHeadIndex }: { mouse: React.MutableRefObject<THRE
       
       // Isolate the specific head based on the activeHeadIndex state
       if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
         if (meshIndex !== activeHeadIndex) {
-          child.visible = false;
+          mesh.visible = false;
         } else {
-          child.visible = true;
+          mesh.visible = true;
           // Natively compute bounding box to find the exact center of this specific hidden mesh
-          if (child.geometry) {
-            child.geometry.computeBoundingBox();
-            const boundingBox = child.geometry.boundingBox;
+          if (mesh.geometry) {
+            mesh.geometry.computeBoundingBox();
+            const boundingBox = mesh.geometry.boundingBox;
             if (boundingBox) {
               const center = new THREE.Vector3();
               boundingBox.getCenter(center);
@@ -49,7 +50,7 @@ function Avatar({ mouse, activeHeadIndex }: { mouse: React.MutableRefObject<THRE
               setMeshOffset(new THREE.Vector3(-center.x, -center.y, -center.z));
             }
           }
-          child.position.set(0, 0, 0);
+          mesh.position.set(0, 0, 0);
         }
         meshIndex++;
       }
@@ -186,11 +187,6 @@ export default function FloatingAvatar() {
 
   return (
     <>
-      <Html wrapperClass="pointer-events-none" fullscreen>
-         <div className="absolute top-4 right-4 text-xs font-mono text-white/50 bg-black/20 p-2 rounded pointer-events-none z-50">
-           Use ⬅️ / ➡️ keys to cycle heads. Target: {activeHeadIndex}
-         </div>
-      </Html>
 
       <group ref={containerRef} scale={baseScale}>
         <group ref={parallaxGroupRef}>

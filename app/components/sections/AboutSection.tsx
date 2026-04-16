@@ -1,14 +1,81 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import { BIO } from "@/lib/data";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Word-by-word reveal animation
+/**
+ * Cybersecurity Glitch / Scramble Effect
+ */
+function GlitchText({ text, className }: { text: string; className?: string }) {
+  const [displayText, setDisplayText] = useState(text);
+  const chars = "!<>-_\\/[]{}—=+*^?#________";
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const scramble = () => {
+    let iteration = 0;
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    
+    intervalRef.current = setInterval(() => {
+      setDisplayText((prev) =>
+        text
+          .split("")
+          .map((char, index) => {
+            if (index < iteration) return text[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+          })
+          .join("")
+      );
+
+      if (iteration >= text.length) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+      }
+      iteration += 1 / 3;
+    }, 30);
+  };
+
+  return (
+    <motion.span 
+      className={className}
+      onViewportEnter={scramble}
+    >
+      {displayText}
+    </motion.span>
+  );
+}
+
+/**
+ * Floating Emojis in background
+ */
+function FloatingEmoji({ emoji, delay = 0, initialX, initialY }: { emoji: string; delay?: number; initialX: string; initialY: string }) {
+  return (
+    <motion.div
+      className="absolute text-6xl md:text-8xl select-none opacity-20 pointer-events-none z-0"
+      initial={{ x: initialX, y: initialY, scale: 0.5, opacity: 0 }}
+      whileInView={{ 
+        opacity: [0, 0.2, 0.1, 0.2, 0],
+        y: ["0%", "-100%"],
+        rotate: [0, 15, -15, 10, 0],
+        scale: [0.5, 1.2, 1, 1.1, 0.8]
+      }}
+      viewport={{ once: false }}
+      transition={{
+        duration: 15,
+        delay,
+        repeat: Infinity,
+        ease: "linear"
+      }}
+    >
+      {emoji}
+    </motion.div>
+  );
+}
+
+// Word-by-word reveal animation (existing)
 function RevealText({ text, className }: { text: string; className?: string }) {
   const words = text.split(" ");
   return (
@@ -49,36 +116,8 @@ export default function AboutSection() {
     offset: ["start end", "end start"],
   });
 
-  const y = useSpring(useTransform(scrollYProgress, [0, 1], [60, -60]), {
-    stiffness: 80, damping: 20,
-  });
-
-  // Theme switch trigger positioned at END of this section
-  useEffect(() => {
-    if (!themeRef.current) return;
-
-    const trigger = ScrollTrigger.create({
-      trigger: themeRef.current,
-      start: "top center",
-      onEnter: () => {
-        document.documentElement.classList.add("light");
-        // Lens flare burst on light switch
-        const flash = document.createElement("div");
-        flash.style.cssText = `
-          position:fixed; inset:0; z-index:9999; pointer-events:none;
-          background:radial-gradient(circle at center, rgba(255,255,255,0.6) 0%, transparent 70%);
-          animation: flashBurst 1.2s cubic-bezier(0.4,0,0.2,1) forwards;
-        `;
-        document.body.appendChild(flash);
-        setTimeout(() => flash.remove(), 1300);
-      },
-      onLeaveBack: () => {
-        document.documentElement.classList.remove("light");
-      },
-    });
-
-    return () => trigger.kill();
-  }, []);
+  // Theme switch logic handled in page.tsx for more centralized control
+  // But we'll keep the ID accessible
 
   return (
     <section
@@ -88,6 +127,13 @@ export default function AboutSection() {
     >
       {/* ── DARK ABOUT SECTION ── */}
       <div className="relative w-full py-32 bg-[#0a0a0a]">
+        
+        {/* Background Background Emojis - Animated like Wix Studio */}
+        <FloatingEmoji emoji="❤️" initialX="10%" initialY="80%" delay={0} />
+        <FloatingEmoji emoji="🌸" initialX="85%" initialY="60%" delay={2} />
+        <FloatingEmoji emoji="🧊" initialX="20%" initialY="20%" delay={5} />
+        <FloatingEmoji emoji="⚡" initialX="70%" initialY="90%" delay={3} />
+
         {/* Background glows */}
         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none -translate-x-1/2 -translate-y-1/4" />
         <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px] pointer-events-none translate-x-1/3 translate-y-1/4" />
@@ -104,9 +150,9 @@ export default function AboutSection() {
             Who I am
           </motion.p>
 
-          {/* Giant heading */}
+          {/* Giant heading with GLITCH effect */}
           <h2 className="text-6xl lg:text-[7rem] font-black tracking-tighter leading-none text-white uppercase mb-12">
-            <RevealText text="ABOUT ME" />
+            <GlitchText text="ABOUT ME" />
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
@@ -137,7 +183,7 @@ export default function AboutSection() {
                 global markets to human behavior.
               </motion.p>
 
-              {/* Skills pill cloud */}
+              {/* Skills pill cloud with "Reverse Transparency" on hover */}
               <motion.div
                 className="flex flex-wrap gap-3 pt-4"
                 initial={{ opacity: 0 }}
@@ -148,16 +194,16 @@ export default function AboutSection() {
                 {SKILLS_LIST.map((skill, i) => (
                   <motion.span
                     key={skill}
-                    className="px-4 py-2 rounded-full text-sm font-semibold border border-white/10 bg-white/5 text-white/70"
+                    className="px-4 py-2 rounded-full text-sm font-semibold border border-white/10 bg-white/5 text-white/70 transition-all duration-300"
                     initial={{ opacity: 0, scale: 0.8 }}
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.5 + i * 0.04, duration: 0.4 }}
                     whileHover={{
-                      scale: 1.1,
-                      borderColor: "rgba(59,130,246,0.5)",
-                      backgroundColor: "rgba(59,130,246,0.1)",
-                      color: "#93c5fd",
+                      scale: 1.05,
+                      borderColor: "rgba(59,130,246,0.8)",
+                      backgroundColor: "rgba(255,255,255,0.9)", // Reverse: becomes solid white/light
+                      color: "#0a0a0a", // Text becomes dark
                     }}
                   >
                     {skill}
@@ -169,7 +215,6 @@ export default function AboutSection() {
             {/* Right: Animated stat blocks */}
             <div className="flex flex-col gap-6">
               {[
-                { value: "3+", label: "Years of Experience", color: "#3b82f6" },
                 { value: "7+", label: "Projects Shipped", color: "#8b5cf6" },
                 { value: "100K+", label: "Lines of Code", color: "#ec4899" },
                 { value: "∞", label: "Curiosity", color: "#f59e0b" },
@@ -181,7 +226,11 @@ export default function AboutSection() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.15, duration: 0.7 }}
-                  whileHover={{ x: 8, borderColor: stat.color + "40" }}
+                  whileHover={{ 
+                    x: 8, 
+                    borderColor: stat.color + "60",
+                    backgroundColor: "rgba(255,255,255,0.05)"
+                  }}
                 >
                   <span
                     className="text-5xl font-black leading-none"
@@ -196,9 +245,6 @@ export default function AboutSection() {
           </div>
         </div>
       </div>
-
-      {/* ── THEME TRANSITION TRIGGER POINT ── */}
-      <div ref={themeRef} className="h-1 w-full" aria-hidden />
     </section>
   );
 }

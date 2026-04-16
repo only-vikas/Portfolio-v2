@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { TrendingUp, Globe, Brain, BookOpen, Trophy, Crown } from "lucide-react";
 import Image from "next/image";
 
@@ -62,9 +62,9 @@ const HOBBIES = [
     emoji: "♟️",
     description:
       "The king of strategic thinking. Every game is a compressed microcosm of war, diplomacy, and pure calculation. Rated ~1400 Blitz.",
-    color: "#f1502f",
-    image: "/images/hobbies/chess.webp",
-    bg: "from-orange-500/10 to-red-500/10",
+    color: "#f87171", // Safer red
+    image: null, // Removed aggressive image, using emoji for cleaner look
+    bg: "from-red-500/10 to-orange-500/10",
   },
 ];
 
@@ -73,39 +73,24 @@ function HobbyCard({ hobby, index }: { hobby: typeof HOBBIES[0]; index: number }
 
   return (
     <motion.div
-      className={`relative flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"} gap-0 rounded-3xl overflow-hidden border border-foreground/10 bg-gradient-to-br ${hobby.bg} backdrop-blur-sm min-h-[240px]`}
+      className={`relative flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"} gap-0 rounded-3xl overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm min-h-[240px]`}
       initial={{ opacity: 0, y: 60 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}
       transition={{ duration: 0.8, delay: 0.1 }}
-      whileHover={{ scale: 1.01, borderColor: hobby.color + "50" }}
+      whileHover={{ scale: 1.02, borderColor: hobby.color + "50", backgroundColor: "rgba(255,255,255,0.08)" }}
     >
-      {/* Image side (if image exists) */}
-      {hobby.image && (
-        <div className="relative w-full md:w-[320px] flex-shrink-0 min-h-[200px] overflow-hidden">
-          <Image
-            src={hobby.image}
-            alt={hobby.name}
-            fill
-            className="object-cover"
-            style={{ filter: "brightness(0.7) saturate(1.2)" }}
-          />
-          <div className={`absolute inset-0 bg-gradient-to-${isEven ? "r" : "l"} from-transparent to-black/60`} />
-        </div>
-      )}
-
-      {/* No image: decorative emoji large */}
-      {!hobby.image && (
-        <div
-          className="w-full md:w-[200px] flex-shrink-0 flex items-center justify-center text-8xl min-h-[200px] opacity-30"
-          style={{ background: `radial-gradient(circle, ${hobby.color}20, transparent 70%)` }}
-        >
-          {hobby.emoji}
-        </div>
-      )}
+      {/* Visual side */}
+      <div
+        className="w-full md:w-[280px] flex-shrink-0 flex items-center justify-center text-7xl min-h-[200px] relative bg-[#0d0d0d]"
+        style={{ color: hobby.color }}
+      >
+         <div className="absolute inset-0 opacity-20" style={{ background: `radial-gradient(circle, ${hobby.color}40, transparent 70%)` }} />
+         <span className="relative z-10">{hobby.emoji}</span>
+      </div>
 
       {/* Content side */}
-      <div className="flex flex-col justify-center gap-4 p-8 lg:p-12 flex-1">
+      <div className="flex flex-col justify-center gap-4 p-8 lg:p-12 flex-1 bg-black/40">
         <div className="flex items-center gap-3">
           <motion.div
             className="p-3 rounded-xl"
@@ -114,9 +99,9 @@ function HobbyCard({ hobby, index }: { hobby: typeof HOBBIES[0]; index: number }
           >
             {hobby.icon}
           </motion.div>
-          <h4 className="text-2xl lg:text-3xl font-bold tracking-tight">{hobby.name}</h4>
+          <h4 className="text-2xl lg:text-3xl font-black tracking-tight text-white">{hobby.name}</h4>
         </div>
-        <p className="text-foreground/60 leading-relaxed max-w-lg">{hobby.description}</p>
+        <p className="text-white/50 leading-relaxed max-w-lg font-light">{hobby.description}</p>
       </div>
 
       {/* Accent bar */}
@@ -130,36 +115,37 @@ function HobbyCard({ hobby, index }: { hobby: typeof HOBBIES[0]; index: number }
 
 export default function HobbiesSection() {
   return (
-    <section id="beyond" className="relative w-full py-32 overflow-hidden">
+    <section id="beyond" className="relative w-full py-40 overflow-hidden bg-[#050505]">
       {/* Background accents */}
-      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-amber-400/5 rounded-full blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-400/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-violet-600/5 rounded-full blur-[150px] pointer-events-none" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-8 lg:px-24">
+      <div className="relative z-10 max-w-6xl mx-auto px-8 lg:px-24">
         {/* Heading */}
         <motion.div
-          className="flex flex-col gap-4 mb-20"
+          className="flex flex-col gap-6 mb-24"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <p className="text-xs font-bold tracking-[0.4em] text-foreground/30 uppercase">
-            Life Beyond the Terminal
-          </p>
-          <h2 className="text-5xl lg:text-7xl font-black tracking-tighter leading-none">
-            Beyond
-            <br />
-            <span className="text-brand">the Code</span>
+          <div className="flex items-center gap-4">
+             <div className="h-0.5 w-10 bg-white/20" />
+             <p className="text-xs font-black tracking-[0.5em] text-white/30 uppercase">
+               Human Protocol
+             </p>
+          </div>
+          <h2 className="text-6xl lg:text-8xl font-black tracking-tighter leading-none text-white">
+            BEYOND THE <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">TERMINAL</span>
           </h2>
-          <p className="text-foreground/50 text-lg max-w-xl mt-2">
-            What fuels my universe outside the terminal — the passions that make me a
-            better engineer.
+          <p className="text-white/40 text-lg max-w-2xl mt-2 font-light leading-relaxed">
+            What fuels my universe outside the terminal — the passions that refine my strategic thinking and creative execution.
           </p>
         </motion.div>
 
         {/* Cards */}
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-10">
           {HOBBIES.map((hobby, idx) => (
             <HobbyCard key={hobby.name} hobby={hobby} index={idx} />
           ))}

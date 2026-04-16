@@ -8,6 +8,7 @@ import { ArrowDown } from "lucide-react";
 import { BIO } from "@/lib/data";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import { motion } from "framer-motion";
 
 // Components
@@ -27,7 +28,7 @@ export default function Home() {
   const heroRef = useRef<HTMLElement>(null);
   const scrollPromptRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useGSAP(() => {
     // Fade out scroll prompt on scroll
     if (scrollPromptRef.current) {
       gsap.to(scrollPromptRef.current, {
@@ -41,9 +42,28 @@ export default function Home() {
       });
     }
 
-    return () => {
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
+    // --- THEME ORCHESTRATION ---
+    // Projects: Light
+    ScrollTrigger.create({
+      trigger: "#work",
+      start: "top center",
+      end: "bottom center",
+      onEnter: () => document.documentElement.classList.add("light"),
+      onEnterBack: () => document.documentElement.classList.add("light"),
+      onLeave: () => document.documentElement.classList.remove("light"),
+      onLeaveBack: () => document.documentElement.classList.remove("light"),
+    });
+
+    // Contact: Light
+    ScrollTrigger.create({
+      trigger: "#contact",
+      start: "top center",
+      end: "bottom bottom",
+      onEnter: () => document.documentElement.classList.add("light"),
+      onEnterBack: () => document.documentElement.classList.add("light"),
+      onLeave: () => document.documentElement.classList.remove("light"),
+      onLeaveBack: () => document.documentElement.classList.remove("light"),
+    });
   }, []);
 
   return (
@@ -53,7 +73,7 @@ export default function Home() {
       
       <main className="min-h-screen bg-transparent flex flex-col items-center">
         
-        {/* ── HERO SECTION ── */}
+        {/* ── HERO SECTION (Dark) ── */}
         <section ref={heroRef} id="home" className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-transparent">
           {/* Background Gradients */}
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]" />
@@ -148,19 +168,19 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── SKILLS MARQUEE (dark, right after hero) ── */}
+        {/* ── SKILLS MARQUEE (Dark) ── */}
         <SkillsMarquee />
 
-        {/* ── ABOUT ME + theme trigger at end ── */}
+        {/* ── ABOUT ME (Dark) ── */}
         <AboutSection />
 
-        {/* ── PROJECTS (light theme) ── */}
+        {/* ── PROJECTS (Light) ── */}
         <ProjectsSection />
 
-        {/* ── BEYOND THE CODE / HOBBIES ── */}
+        {/* ── BEYOND THE CODE / HOBBIES (Dark) ── */}
         <HobbiesSection />
 
-        {/* ── CONTACT ── */}
+        {/* ── CONTACT (Light) ── */}
         <ContactSection />
         
       </main>

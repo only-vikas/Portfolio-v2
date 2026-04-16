@@ -31,8 +31,8 @@ export default function MagneticButton({ children, className, onClick, ...props 
   };
 
   return (
-    <motion.button
-      ref={ref}
+    <motion.div
+      ref={ref as any}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
@@ -41,6 +41,6 @@ export default function MagneticButton({ children, className, onClick, ...props 
       {...props}
     >
       {children}
-    </motion.button>
+    </motion.div>
   );
 }
