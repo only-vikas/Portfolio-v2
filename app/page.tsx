@@ -81,11 +81,11 @@ export default function Home() {
 
           {/* MASSIVE TYPOGRAPHY BACKGROUND */}
           <div className="absolute top-1/2 -translate-y-[70%] flex flex-col items-center w-full z-0 pointer-events-none">
-             <div className="flex gap-8 lg:gap-24 text-xs font-bold tracking-[0.3em] text-white/50 uppercase mb-4 lg:mb-10">
-                <span>About</span>
-                <span>Experience</span>
-                <span>Projects</span>
-                <span>Contact</span>
+             <div className="flex gap-8 lg:gap-24 text-xs font-bold tracking-[0.3em] text-white/50 uppercase mb-4 lg:mb-10 pointer-events-auto relative z-20">
+                <button onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-white transition-colors cursor-pointer">About</button>
+                <button onClick={() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-white transition-colors cursor-pointer">Experience</button>
+                <button onClick={() => document.getElementById("work")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-white transition-colors cursor-pointer">Projects</button>
+                <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })} className="hover:text-white transition-colors cursor-pointer">Contact</button>
              </div>
              <motion.h1 
                 initial={{ opacity: 0, scale: 0.9 }}

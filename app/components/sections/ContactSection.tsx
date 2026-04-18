@@ -75,7 +75,7 @@ export default function ContactSection() {
                  <span className="w-1 h-1 bg-current rounded-full" />
                  <span className="text-xs font-black tracking-widest uppercase">Available for new opportunities</span>
                </motion.div>
-               <h2 className="text-6xl lg:text-[7.5rem] font-black tracking-tighter leading-[0.9] text-slate-900">
+               <h2 className="text-6xl lg:text-7xl xl:text-[6rem] font-black tracking-tighter leading-[0.9] text-slate-900 break-words">
                  LET'S BUILD <br />
                  <span className="text-blue-600">LEGENDARY.</span>
                </h2>
