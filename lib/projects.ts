@@ -88,7 +88,6 @@ export const MY_PROJECTS: Project[] = [
     category: "ai",
     year: 2025,
     githubUrl: "https://github.com/only-vikas/youtube-ai-notes",
-    demoUrl: "https://youtubenotes.vercel.app",
     images: ["/images/projects/youtube-1.webp"]
   },
   {
