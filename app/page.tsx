@@ -1,9 +1,6 @@
 "use client";
 
 import React, { Suspense, useEffect, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Environment } from "@react-three/drei";
-import FloatingAvatar from "./components/3d/FloatingAvatar";
 import { ArrowDown } from "lucide-react";
 import { BIO } from "@/lib/data";
 import gsap from "gsap";
@@ -71,7 +68,7 @@ export default function Home() {
       <CustomCursor />
       <StickyNav />
       
-      <main className="min-h-screen bg-transparent flex flex-col items-center">
+      <main className="relative min-h-screen bg-transparent flex flex-col items-center">
         
         {/* ── HERO SECTION (Dark) ── */}
         <section ref={heroRef} id="home" className="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-transparent">
@@ -94,25 +91,11 @@ export default function Home() {
                 className="text-[18vw] lg:text-[14rem] font-black tracking-tighter leading-none text-foreground m-0 uppercase"
                 style={{ fontFamily: "Impact, system-ui, sans-serif", letterSpacing: "-0.02em" }}
              >
-               HI, I'M VIKAS
+               HI, I&apos;M VIKAS
              </motion.h1>
           </div>
 
-          {/* FULL SCREEN 3D CANVAS */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-            className="absolute inset-0 w-full h-full z-10 pointer-events-none flex items-center justify-center"
-          >
-            <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-              <Suspense fallback={null}>
-                <Environment preset="city" />
-                <FloatingAvatar />
-              </Suspense>
-            </Canvas>
-          </motion.div>
-
+          {/* FULL SCREEN 3D CANVAS REMOVED */}
           {/* FLANKING PANELS — anchored to bottom */}
           <div className="absolute w-full h-full inset-0 z-20 pointer-events-none flex items-end justify-between px-8 lg:px-24 pb-16 lg:pb-32">
             

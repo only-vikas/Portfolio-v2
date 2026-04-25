@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { MY_PROJECTS } from "@/lib/projects";
-import ProjectCanvas from "@/app/components/3d/ProjectCanvas";
 
 const GithubIcon = ({ size = 24 }: { size?: number; className?: string }) => (
 
@@ -106,10 +105,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </div>
         </div>
 
-        {/* 3D Visual Context */}
-        <div className="flex-1 w-full h-[40vh] lg:h-[60vh] relative z-0 mt-8 lg:mt-0 opacity-80 pointer-events-none">
-          <ProjectCanvas />
-        </div>
+        {/* 3D Visual Context Removed */}
       </section>
 
       {/* Detailed Case Study */}

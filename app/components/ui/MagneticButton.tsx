@@ -3,8 +3,12 @@
 import React, { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
-export default function MagneticButton({ children, className, onClick, ...props }: any) {
-  const ref = useRef<HTMLButtonElement>(null);
+interface MagneticButtonProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+}
+
+export default function MagneticButton({ children, className, onClick, ...props }: MagneticButtonProps) {
+  const ref = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -32,7 +36,7 @@ export default function MagneticButton({ children, className, onClick, ...props 
 
   return (
     <motion.div
-      ref={ref as any}
+      ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
