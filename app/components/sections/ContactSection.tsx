@@ -128,6 +128,7 @@ export default function ContactSection() {
                      <div className="flex flex-col gap-3 group">
                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Your Alias</label>
                        <input 
+                         suppressHydrationWarning
                          required
                          type="text" 
                          placeholder="VIKAS KANNUR"
@@ -138,6 +139,7 @@ export default function ContactSection() {
                      <div className="flex flex-col gap-3 group">
                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Transmission Endpoint</label>
                        <input 
+                         suppressHydrationWarning
                          required
                          type="email" 
                          placeholder="HELLO@WORLD.COM"
@@ -148,6 +150,7 @@ export default function ContactSection() {
                      <div className="flex flex-col gap-3 group">
                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Transmission Data</label>
                        <textarea 
+                         suppressHydrationWarning
                          required
                          rows={4}
                          placeholder="DROP THE DETAILS..."
