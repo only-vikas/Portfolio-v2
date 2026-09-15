@@ -13,6 +13,7 @@ Welcome to my portfolio — a next-generation web experience showcasing my work 
 Crafted with a focus on **performance**, **aesthetics**, and **interactivity**, this project demonstrates my ability to build bold, memorable digital experiences that push the boundaries of web design.
 
 ---
+![Portfolio Preview](https://github.com/user-attachments/assets/cf40b9d9-cf0e-4771-b23f-9e59c27cae2f)
 
 ## ✨ Key Features
 
@@ -279,7 +280,7 @@ Visit the live demo to experience the full cinematic experience:
 
 [**🌐 View Live Portfolio**](https://portfolio-v2-alpha-rust.vercel.app)
 
-![Portfolio Preview](https://github.com/user-attachments/assets/cf40b9d9-cf0e-4771-b23f-9e59c27cae2f)
+
 *Full portfolio experience with cinematic animations and modern UI design*
 
 ---
@@ -335,4 +336,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Built with ❤️ by [Vikas Kannur](https://github.com/only-vikas) • 2026**
+
